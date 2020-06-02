@@ -3,28 +3,38 @@ import asyncio
 import sys
 import cv2
 import numpy as np
+import os
+from bot.bot_init import BotInit
 
-client = discord.Client()
+
+def init():
+    BotInit()
+
+
+if __name__ == "__main__":
+    bot_init = BotInit()
+    bot_init.run()
 
 Parts = {
-    "head" : "cathead.png",
-    "body" : "catbody.png",
-    "foot" : "catfoot.png"
+    "head": "./assets/cat/cathead.png",
+    "body": "./assets/cat/catbody.png",
+    "foot": "./assets/cat/catfoot.png",
 }
+
 
 @client.event
 async def on_ready():
-    print('---')
+    print("---")
     print(client.user.id)
     print(client.user.name)
-    print('---')
+    print("---")
 
 
 @client.event
 async def on_message(message):
     if message.author.id != client.user.id:
         if message.content.startswith("cat"):
-            await message.channel.send('にゃーん')
+            await message.channel.send("にゃーん")
 
             Message = message.content.split("_")
 
@@ -35,12 +45,9 @@ async def on_message(message):
 
             catBodyLoop = np.tile(catBody, (int(Num), 1, 1))
             catImg = cv2.vconcat([catHead, catBodyLoop, catfoot])
-            cv2.imwrite('catlink.png', catImg)
+            cv2.imwrite("./assets/cat/catlink.png", catImg)
 
-            await message.channel.send(file=discord.File('catlink.png'))
+            await message.channel.send(file=discord.File("./assets/cat/catlink.png"))
 
         if message.content == "bye":
             sys.exit()
-
-
-client.run("NjIyMDIyODQzMTE0NDU1MDcx.XXt2XQ.uq9iZg3g1bc75k2vQSQGsrr_r2Q")
