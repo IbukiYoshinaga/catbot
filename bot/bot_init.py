@@ -27,7 +27,8 @@ class Router(object):
     async def on_message(message):
         if message.author.id != client.user.id:
             if message.content.startswith("cat"):
-                commands.Cat()
+                CatClass = commands.Cat(message)
+                await CatClass.Processing()
 
 
 class BotInit(object):
