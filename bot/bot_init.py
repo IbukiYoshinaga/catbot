@@ -3,6 +3,8 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 import os
 import asyncio
+from wordcloud import WordCloud
+from os import path
 
 from . import commands
 
@@ -29,6 +31,26 @@ class Router(object):
             if message.content.startswith("cat"):
                 CatClass = commands.Cat(message)
                 await CatClass.Processing()
+
+            if message.content.startswith("mention"):
+                MentionClass = commands.Mention(message)
+                await MentionClass.Processing()
+
+            if message.content.startswith("cloud"):
+                channel = message.channel
+                channel_messages = await channel.history(limit=200).flatten()
+                message_list = []
+                for channel_message in channel_messages:
+                    message_list.append(channel_message.content)
+                message_list_str = " ".join(message_list)
+                word_cloud = WordCloud(
+                    font_path="/System/Library/Fonts/ヒラギノ明朝 ProN.ttc",
+                    background_color="white",
+                    width=900,
+                    height=500,
+                ).generate(message_list_str)
+                word_cloud.to_file(path.join(path.dirname(__file__), "sample.png"))
+                await channel.send(file=discord.File("./bot/sample.png"))
 
 
 class BotInit(object):
